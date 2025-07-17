@@ -3,10 +3,6 @@
   --white: #ffffff;
 }
 
-.site-frame {
-  display: none;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -14,10 +10,22 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-family: "Georgia", serif;
   background-color: #fefefe;
   color: #333;
   line-height: 1.6;
+}
+
+main {
+  flex: 1;
+}
+
+.container-fluid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -27,7 +35,7 @@ body {
 }
 
 /* Frame around site */
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
   body {
     background-color: #f5f5f5;
     margin: 0;
@@ -43,6 +51,7 @@ body {
     border-width: 2px;
     background-color: var(--white);
     min-height: calc(100vh - 80px);
+    border-radius: 10px;
   }
 }
 
@@ -244,6 +253,7 @@ nav {
   padding: 0.25rem 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  border-radius: 10px;
 }
 
 .lang-btn.active {
@@ -394,7 +404,7 @@ main {
 
 .section {
   display: none;
-  min-height: 80vh;
+  /* min-height: 80vh; */
   padding: 2rem 0;
 }
 
@@ -450,7 +460,7 @@ main {
 
 .gallery-item {
   position: relative;
-  aspect-ratio: 1;
+  /* aspect-ratio: 1; */
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -516,6 +526,18 @@ main {
   color: white;
   font-size: 2rem;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .modal-info {
+    background-color: white;
+    padding: .5rem;
+    margin-top: 0rem;
+  }
+
+  #modal-details{
+    margin-bottom: 0.5rem;
+  }
 }
 
 /* About Section */
@@ -626,4 +648,18 @@ main {
   justify-content: center;
   color: #999;
   font-style: italic;
+}
+
+/* Footer */
+.footer-separator {
+  height: 1px;
+  background: #ddd;
+  margin: 3rem 0 2rem 0;
+}
+
+.footer {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  padding: 1rem 0;
 }

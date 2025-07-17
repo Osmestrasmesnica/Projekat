@@ -469,3 +469,9 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+if (btn.classList.contains('active')) {
+    btn.style.display = 'none';
+}
+});

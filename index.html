@@ -88,7 +88,7 @@
             
             <!-- Language switch - always on right -->
             <div class="lang-switch">
-                <button class="lang-btn active" data-lang="de">DE</button>
+                <button class="lang-btn active" data-lang="de" style="display: none;" >DE</button>
                 <button class="lang-btn" data-lang="en">EN</button>
             </div>
         </div>
@@ -98,8 +98,8 @@
             <ul>
                 <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
                 <li><a href="#gallery" class="nav-link" data-section="gallery">Gallery</a></li>
-                <li><a href="#about" class="nav-link" data-section="about">About</a></li>
-                <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+                <li><a href="#about" class="nav-link" data-section="about">Über mich</a></li>
+                <li><a href="#contact" class="nav-link" data-section="contact">Kontakt</a></li>
             </ul>
             <!-- Instagram link only visible in mobile menu -->
             <div class="mobile-instagram">
@@ -217,6 +217,14 @@
             </div>
         </section>
     </main>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Footer separator -->
+        <div class="footer-separator"></div>
+        <p>Copyright © 2025 All rights reserved | Created by WLQ Innovations</p>
+    </footer>
   <!-- End of border/frame around site -->
   </div>
     <!-- Modal for gallery images -->
@@ -235,13 +243,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Main JS Script -->
 	<script src="main.js"></script>
-    <script>
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    if (btn.classList.contains('active')) {
-      btn.style.display = 'none';
-    }
-  });
-</script>
 
 </body>
 </html>
