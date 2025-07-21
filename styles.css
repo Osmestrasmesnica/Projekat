@@ -25,12 +25,13 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 0;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1.5rem;
 }
 
 /* Frame around site */
@@ -43,7 +44,7 @@ main {
 
   .container-fluid {
     margin: 40px auto;
-    padding: 0 20px 0 20px; /*bilo je 0 40 0 40*/
+    /*padding: 0 20px 0 20px;*/ /*bilo je 0 40 0 40*/
     max-width: 1200px;
     border-style: solid;
     border-color: rgba(0, 0, 0, 0.1);
@@ -51,7 +52,10 @@ main {
     background-color: var(--white);
     min-height: calc(100vh - 80px);
     border-radius: 10px;
+    padding: 0;
   }
+
+
 }
 
 /* Header */
@@ -59,7 +63,10 @@ main {
 /* Container wrapper for mobile menu */
 .nav-wrapper {
   position: relative;
-  padding: 0 25px 0 25px;
+  padding: 0 3rem;
+  z-index: 9999;
+  /* background-color: white; */
+  transition: all 0.1s ease;
 }
 
 /* Top navigation - responsive */
@@ -507,8 +514,8 @@ main {
 /* Gallery Section */
 .gallery-section {
   margin-bottom: 3rem;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 2rem; /*bilo je 20px*/
+  padding-right: 2rem; /*bilo je 20px*/
 }
 
 .gallery-grid {
@@ -785,3 +792,48 @@ main {
         max-width: 250px;
     }
 }
+
+/* Back to Top dugme */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background: #555;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+
+/* sticky navwrapp */
+/* Kada se skroluje više od 100px */
+.nav-wrapper.is-sticky {
+  position: sticky;
+  background-color: white;
+  top: 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* po želji */
+}
+

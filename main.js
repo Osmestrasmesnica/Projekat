@@ -477,6 +477,8 @@ function openModal(item, category) {
 
     
     modal.style.display = 'flex';
+
+    document.querySelector('.nav-wrapper').style.display = 'none';
 }
 
 function bindEventListeners() {
@@ -502,12 +504,14 @@ function bindEventListeners() {
     // Modal close
     document.querySelector('.close').addEventListener('click', function() {
         document.getElementById('modal').style.display = 'none';
+        document.querySelector('.nav-wrapper').style.display = '';
     });
 
     // Modal background close
     document.getElementById('modal').addEventListener('click', function(e) {
         if (e.target === this) {
             this.style.display = 'none';
+            document.querySelector('.nav-wrapper').style.display = '';
         }
     });
 
@@ -649,4 +653,45 @@ if (btn.classList.contains('active')) {
     btn.style.display = 'none';
 }
 });
+
+// Back to Top functionality
+const backToTopBtn = document.getElementById('backToTop');
+const navbar = document.getElementById('navbar');
+
+// Show/hide back to top dugme
+window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('show');
+    } else {
+        backToTopBtn.classList.remove('show');
+    }
+
+    // Sticky navigation
+    if (window.pageYOffset > 100) {
+        navbar.classList.add('sticky');
+    } else {
+        navbar.classList.remove('sticky');
+    }
+});
+
+// Back to top click
+backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+
+window.addEventListener("scroll", function () {
+const nav = document.querySelector(".nav-wrapper");
+
+if (window.scrollY > 200) {
+    nav.classList.add("is-sticky");
+} else {
+    nav.classList.remove("is-sticky");
+}
+});
+
+
 
