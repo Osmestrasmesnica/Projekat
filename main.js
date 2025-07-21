@@ -93,6 +93,7 @@ const content = {
 // Gallery data
 const galleryData = {
     colorful: [
+        { id: 11, title: 'Das Baumdorf', titleEn: 'Das Baumdorf', subtitle: '', size: '70x100cm', medium: 'Mixed Media on paper', mediumDe: 'Mischtechnik auf Papier', image: 'assets/gallery/Farbige/picture-11.JPG' },
         { id: 10, title: 'Blauracken', titleEn: 'European Roller', subtitle: 'Where Rollers Roam', size: '42x56cm', medium: 'Mixed Media on paper', mediumDe: 'Mischtechnik auf Papier', image: 'assets/gallery/Farbige/picture-10.JPG' },
         { id: 9, title: 'Motten', titleEn: 'Moths', subtitle: 'The Night\'s Mosaic', size: '42x56cm', medium: 'Mixed Media on paper', mediumDe: 'Mischtechnik auf Papier', image: 'assets/gallery/Farbige/picture-9.JPG' },
         { id: 8, title: 'Eisvögel', titleEn: 'Kingfishers', subtitle: 'Petal Dive', size: '42x56cm', medium: 'Mixed Media on paper', mediumDe: 'Mischtechnik auf Papier', image: 'assets/gallery/Farbige/picture-8.JPG' },
@@ -186,36 +187,239 @@ const galleryData = {
     ]
 };
 
+// Infinite Carousel Class
+class ImprovedSlider {
+    constructor() {
+        this.container = document.querySelector(".slider-container");
+        
+        if (!this.container) return;
+        
+        this.slider = document.querySelector(".slider");
+        this.slideWidth = 410; // 400px + 10px margin (5px sa svake strane)
+
+        this.images = [
+            "assets/gallery/Farbige/picture-8.JPG",
+            "assets/gallery/Schwarz-Weiß/picture-39.JPG", 
+            "assets/gallery/Farbige/picture-10.JPG",
+            "assets/gallery/Schwarz-Weiß/picture-37.JPG",
+        ];
+
+        this.currentIndex = 1;
+        this.isAnimating = false;
+        this.isMobile = window.innerWidth < 992;
+
+        this.init();
+    }
+
+    init() {
+        this.createSlides();
+        this.setupEventListeners();
+        this.positionSlides();
+        this.startAutoplay();
+    }
+
+    createSlides() {
+        // Za desktop kreiraj 3 kopije, za mobilne samo 1 kopiju
+        const copies = this.isMobile ? 1 : 3;
+        const totalSlides = this.images.length * copies;
+        
+        for (let i = 0; i < totalSlides; i++) {
+            const index = i % this.images.length;
+            const slide = document.createElement("div");
+            slide.className = "slide";
+            slide.innerHTML = `<img src="${this.images[index]}" alt="Slide ${index + 1}" loading="lazy">`;
+            this.slider.appendChild(slide);
+        }
+    }
+
+    positionSlides() {
+        const slides = this.slider.querySelectorAll(".slide");
+        
+        if (this.isMobile) {
+            // Za mobilne/tablet - jednostavno centriraj trenutni slajd
+            const offset = (this.container.offsetWidth - this.getSlideWidth()) / 2;
+            const baseTransform = -this.currentIndex * this.getSlideWidth() + offset;
+            this.slider.style.transform = `translateX(${baseTransform}px)`;
+            
+            slides.forEach((slide, index) => {
+                slide.classList.toggle("active", index === this.currentIndex % this.images.length);
+            });
+        } else {
+            // Za desktop - originalna logika
+            const offset = (this.container.offsetWidth - this.slideWidth) / 2;
+            const baseTransform = -this.currentIndex * this.slideWidth + offset;
+            this.slider.style.transform = `translateX(${baseTransform}px)`;
+
+            slides.forEach((slide, index) => {
+                const normalizedIndex = this.normalizeIndex(index);
+                slide.classList.toggle(
+                    "active",
+                    normalizedIndex === this.currentIndex % this.images.length
+                );
+            });
+        }
+    }
+
+    // Pomerio si sa < 576 ? 310 : 410 posto si u CSS menjao @media (max-width) za .sldider-container: height:400px (bilo je 300) i max-width:350px (bilo je 300), plus i .slide min-width:350px (bilo je 300)
+    getSlideWidth() {
+        return this.isMobile ? (window.innerWidth < 576 ? 360 : 410) : this.slideWidth;
+    }
+
+    normalizeIndex(index) {
+        return index % this.images.length;
+    }
+
+    moveSlides(direction) {
+        if (this.isAnimating) return;
+        this.isAnimating = true;
+
+        if (this.isMobile) {
+            // Jednostavna logika za mobilne
+            this.currentIndex = (this.currentIndex + direction + this.images.length) % this.images.length;
+            this.slider.style.transition = "transform 0.3s ease-out";
+            this.positionSlides();
+        } else {
+            // Originalna logika za desktop
+            const slides = this.slider.querySelectorAll(".slide");
+            this.currentIndex += direction;
+
+            this.slider.style.transition = "transform 0.3s ease-out";
+            this.positionSlides();
+
+            if (
+                this.currentIndex >= this.images.length * 2 ||
+                this.currentIndex <= this.images.length - 1
+            ) {
+                setTimeout(() => {
+                    this.slider.style.transition = "none";
+                    this.currentIndex =
+                        this.currentIndex >= this.images.length * 2
+                            ? this.currentIndex - this.images.length
+                            : this.currentIndex + this.images.length;
+                    this.positionSlides();
+                }, 300);
+            }
+        }
+
+        setTimeout(() => {
+            this.isAnimating = false;
+        }, 300);
+    }
+
+    setupEventListeners() {
+        // Click/Touch navigacija
+        this.container.addEventListener("click", (e) => {
+            if (this.isMobile) {
+                // Za mobilne - ceo container je touch area
+                const rect = this.container.getBoundingClientRect();
+                const isLeft = e.clientX < rect.left + rect.width / 2;
+                this.moveSlides(isLeft ? -1 : 1);
+            } else {
+                // Za desktop - originalna logika
+                const rect = this.container.getBoundingClientRect();
+                const isLeft = e.clientX < rect.left + rect.width / 2;
+                this.moveSlides(isLeft ? -1 : 1);
+            }
+        });
+
+        // Touch events za mobilne
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        this.container.addEventListener("touchstart", (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            this.stopAutoplay();
+        });
+
+        this.container.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            currentX = e.touches[0].clientX;
+        });
+
+        this.container.addEventListener("touchend", (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const diffX = startX - currentX;
+            if (Math.abs(diffX) > 50) { // Minimum swipe distance
+                this.moveSlides(diffX > 0 ? 1 : -1);
+            }
+            
+            this.startAutoplay();
+        });
+
+        // Resize event
+        window.addEventListener("resize", () => {
+            const newIsMobile = window.innerWidth < 992;
+            if (newIsMobile !== this.isMobile) {
+                // Recreate slider for different layout
+                this.isMobile = newIsMobile;
+                this.slider.innerHTML = '';
+                this.createSlides();
+            }
+            this.positionSlides();
+        });
+
+        // Hover events (samo za desktop)
+        if (!this.isMobile) {
+            this.container.addEventListener("mouseenter", () => {
+                this.stopAutoplay();
+            });
+
+            this.container.addEventListener("mouseleave", () => {
+                this.startAutoplay();
+            });
+        }
+    }
+
+    startAutoplay() {
+        this.stopAutoplay();
+        this.autoplayInterval = setInterval(() => {
+            this.moveSlides(1);
+        }, 4000);
+    }
+
+    stopAutoplay() {
+        if (this.autoplayInterval) {
+            clearInterval(this.autoplayInterval);
+            this.autoplayInterval = null;
+        }
+    }
+}
+
 let currentLanguage = 'de';
-let currentSlide = 0;
-const slides = document.querySelectorAll('.slide');
+// let currentSlide = 0;
+// const slides = document.querySelectorAll('.slide');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    initializeSlideshow();
+    // initializeSlideshow();
+    new ImprovedSlider();
     populateGallery();
     bindEventListeners();
 });
 
-function initializeSlideshow() {
-    setInterval(changeSlide, 4000);
-}
+// function initializeSlideshow() {
+//     setInterval(changeSlide, 4000);
+// }
 
-function changeSlide() {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add('active');
+// function changeSlide() {
+//     slides[currentSlide].classList.remove('active');
+//     currentSlide = (currentSlide + 1) % slides.length;
+//     slides[currentSlide].classList.add('active');
     
-    // Add fade effect to previous/next slides
-    slides.forEach((slide, index) => {
-        slide.classList.remove('prev', 'next');
-        if (index === (currentSlide - 1 + slides.length) % slides.length) {
-            slide.classList.add('prev');
-        } else if (index === (currentSlide + 1) % slides.length) {
-            slide.classList.add('next');
-        }
-    });
-}
+//     // Add fade effect to previous/next slides
+//     slides.forEach((slide, index) => {
+//         slide.classList.remove('prev', 'next');
+//         if (index === (currentSlide - 1 + slides.length) % slides.length) {
+//             slide.classList.add('prev');
+//         } else if (index === (currentSlide + 1) % slides.length) {
+//             slide.classList.add('next');
+//         }
+//     });
+// }
 
 function populateGallery() {
     const colorfulGallery = document.getElementById('colorful-gallery');
@@ -475,3 +679,4 @@ if (btn.classList.contains('active')) {
     btn.style.display = 'none';
 }
 });
+
