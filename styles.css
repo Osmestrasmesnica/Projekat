@@ -1,4 +1,3 @@
-/* Frame styling - only for desktop */
 :root {
   --white: #ffffff;
 }
@@ -56,74 +55,7 @@ main {
 }
 
 /* Header */
-/*! WORKING HEADER
-/* header {
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0;
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #2c3e50;
-  text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s;
-  border-bottom: 2px solid transparent;
-  padding-bottom: 3px;
-}
-
-.nav-links a:hover,
-.nav-links a.active {
-  color: #8e44ad;
-  border-bottom-color: #8e44ad;
-}
-
-.lang-switch {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.lang-btn {
-  background: none;
-  border: 1px solid #ddd;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  border-radius: 3px;
-}
-
-.lang-btn.active {
-  background-color: #8e44ad;
-  color: white;
-  border-color: #8e44ad;
-} */
-/*! END OF WORKING HEADER
-
-
-/*! TEST HEADER
 /* Container wrapper for mobile menu */
 .nav-wrapper {
   position: relative;
@@ -397,9 +329,6 @@ nav {
   }
 }
 
-/*! END OF TEST HEADER
-
-
 /* Main Content */
 main {
   margin-top: 80px;
@@ -416,39 +345,6 @@ main {
 }
 
 /* Home Section */
-/* .slideshow-container {
-  position: relative;
-  max-width: 800px;
-  margin: 2rem auto;
-  height: 400px;
-  overflow: hidden;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.slide.active {
-  opacity: 1;
-}
-
-.slide.prev {
-  opacity: 0.3;
-}
-
-.slide.next {
-  opacity: 0.3;
-} */
-
 /* Carousel Styles */
 .slider-container {
     width: 100%;

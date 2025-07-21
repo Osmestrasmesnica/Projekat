@@ -390,8 +390,6 @@ class ImprovedSlider {
 }
 
 let currentLanguage = 'de';
-// let currentSlide = 0;
-// const slides = document.querySelectorAll('.slide');
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
@@ -400,26 +398,6 @@ document.addEventListener('DOMContentLoaded', function() {
     populateGallery();
     bindEventListeners();
 });
-
-// function initializeSlideshow() {
-//     setInterval(changeSlide, 4000);
-// }
-
-// function changeSlide() {
-//     slides[currentSlide].classList.remove('active');
-//     currentSlide = (currentSlide + 1) % slides.length;
-//     slides[currentSlide].classList.add('active');
-    
-//     // Add fade effect to previous/next slides
-//     slides.forEach((slide, index) => {
-//         slide.classList.remove('prev', 'next');
-//         if (index === (currentSlide - 1 + slides.length) % slides.length) {
-//             slide.classList.add('prev');
-//         } else if (index === (currentSlide + 1) % slides.length) {
-//             slide.classList.add('next');
-//         }
-//     });
-// }
 
 function populateGallery() {
     const colorfulGallery = document.getElementById('colorful-gallery');
@@ -555,13 +533,6 @@ function updateActiveNavLink(activeLink) {
     activeLink.classList.add('active');
 }
 
-// function updateActiveLangBtn(activeBtn) {
-//     document.querySelectorAll('.lang-btn').forEach(btn => {
-//         btn.classList.remove('active');
-//     });
-//     activeBtn.classList.add('active');
-// }
-
 function updateActiveLangBtn(activeBtn) {
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -621,7 +592,6 @@ function switchLanguage(lang) {
     // Repopulate gallery with new language
     populateGallery();
 
-    //! Dodao si i ovo
     // Update language toggle buttons
     const activeBtn = document.querySelector(`.lang-btn[data-lang="${lang}"]`);
     updateActiveLangBtn(activeBtn);
