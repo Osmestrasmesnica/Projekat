@@ -331,11 +331,11 @@ function bindEventListeners() {
     });
 
     // Contact form
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert(currentLanguage === 'de' ? 'Nachricht gesendet!' : 'Message sent!');
-        this.reset();
-    });
+    // document.querySelector('form').addEventListener('submit', function(e) {
+    //     e.preventDefault();
+    //     alert(currentLanguage === 'de' ? 'Nachricht gesendet!' : 'Message sent!');
+    //     this.reset();
+    // });
 }
 
 function showSection(sectionId) {
