@@ -10,9 +10,9 @@ class ImprovedSlider {
 
         this.images = [
             "assets/gallery/Farbige/picture-8.JPG",
-            "assets/gallery/Schwarz-Weiß/picture-39.JPG", 
+            "assets/gallery/Schwarz-Weiss/picture-39.JPG", 
             "assets/gallery/Farbige/picture-10.JPG",
-            "assets/gallery/Schwarz-Weiß/picture-37.JPG",
+            "assets/gallery/Schwarz-Weiss/picture-37.JPG",
         ];
 
         this.currentIndex = 1;
