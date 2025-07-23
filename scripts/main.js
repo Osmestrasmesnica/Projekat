@@ -9,10 +9,10 @@ class ImprovedSlider {
         this.slideWidth = 410; // 400px + 10px margin (5px sa svake strane)
 
         this.images = [
-            "assets/gallery/Farbige/picture-8.jpg",
-            "assets/gallery/Schwarz-Weiss/picture-39.jpg", 
-            "assets/gallery/Farbige/picture-10.jpg",
-            "assets/gallery/Schwarz-Weiss/picture-37.jpg",
+            "../assets/gallery/Farbige/picture-8.jpg",
+            "../assets/gallery/Schwarz-Weiss/picture-39.jpg", 
+            "../assets/gallery/Farbige/picture-10.jpg",
+            "../assets/gallery/Schwarz-Weiss/picture-37.jpg",
         ];
 
         this.currentIndex = 1;
