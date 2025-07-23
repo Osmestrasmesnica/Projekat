@@ -9,10 +9,10 @@ class ImprovedSlider {
         this.slideWidth = 410; // 400px + 10px margin (5px sa svake strane)
 
         this.images = [
-            "../assets/gallery/Farbige/picture-8.jpg",
-            "../assets/gallery/Schwarz-Weiss/picture-39.jpg", 
-            "../assets/gallery/Farbige/picture-10.jpg",
-            "../assets/gallery/Schwarz-Weiss/picture-37.jpg",
+            "assets/carousel/carusel-picture-1.jpg",
+            "assets/carousel/carusel-picture-2.jpg", 
+            "assets/carousel/carusel-picture-3.jpg",
+            "assets/carousel/carusel-picture-4.jpg",
         ];
 
         this.currentIndex = 1;
@@ -38,7 +38,7 @@ class ImprovedSlider {
             const index = i % this.images.length;
             const slide = document.createElement("div");
             slide.className = "slide";
-            slide.innerHTML = `<img src="${this.images[index]}" alt="Slide ${index + 1}" loading="lazy">`;
+            slide.innerHTML = `<img src="${this.images[index]}" alt="Slide ${index + 1}">`;
             this.slider.appendChild(slide);
         }
     }
