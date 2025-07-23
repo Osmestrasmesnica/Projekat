@@ -38,7 +38,7 @@ class ImprovedSlider {
             const index = i % this.images.length;
             const slide = document.createElement("div");
             slide.className = "slide";
-            slide.innerHTML = `<img src="${this.images[index]}" alt="Slide ${index + 1}" loading="lazy">`;
+            slide.innerHTML = `<img src="${this.images[index]}" alt="Slide ${index + 1}">`;
             this.slider.appendChild(slide);
         }
     }
@@ -515,3 +515,9 @@ window.onload = function() {
     // Reset the form fields when the page loads
     document.getElementById("form").reset();
 };
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').style.display = 'none';
+    }, 3000); // 3 sekunde
+});
