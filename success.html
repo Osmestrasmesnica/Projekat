@@ -111,10 +111,10 @@
             <!-- Sub navigation -->
             <nav class="sub-nav" id="sub-nav">
                 <ul>
-                    <li><a href="index.html#home" class="nav-link">Home</a></li>
-                    <li><a href="index.html#gallery" class="nav-link">Gallery</a></li>
-                    <li><a href="index.html#about" class="nav-link">Über mich</a></li>
-                    <li><a href="index.html#contact" class="nav-link">Kontakt</a></li>
+                    <li><a href="index.html#home" class="nav-link active" data-section="home">Home</a></li>
+                    <li><a href="index.html#gallery" class="nav-link" data-section="gallery">Gallery</a></li>
+                    <li><a href="index.html#about" class="nav-link" data-section="about">Über mich</a></li>
+                    <li><a href="index.html#contact" class="nav-link" data-section="contact">Kontakt</a></li>
                 </ul>
                 <!-- Instagram link only visible in mobile menu -->
                 <div class="mobile-instagram">
@@ -163,8 +163,28 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Main JS Script -->
-	<script src="scripts/main.js"></script>
 	<script src="scripts/language.js"></script>
+	<script src="scripts/contact.js"></script>
+    <script>
+        // Na success.html stranici, postavite jezik iz localStorage pre nego što se učita main.js
+        document.addEventListener('DOMContentLoaded', function() {
+            // Forsiraj čitanje jezika iz localStorage
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage) {
+                currentLanguage = savedLanguage;
+                console.log('Forced language from localStorage:', savedLanguage);
+            }
+        });
+
+        // Također možete dodati ovo u success.html da garantujete čuvanje jezika
+        window.addEventListener('beforeunload', function() {
+            // Sačuvaj trenutni jezik pre odlaska sa stranice
+            if (typeof currentLanguage !== 'undefined') {
+                localStorage.setItem('selectedLanguage', currentLanguage);
+                console.log('Language saved before leaving:', currentLanguage);
+            }
+        });
+    </script>
 
 </body>
 </html>

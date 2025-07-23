@@ -9,10 +9,10 @@ class ImprovedSlider {
         this.slideWidth = 410; // 400px + 10px margin (5px sa svake strane)
 
         this.images = [
-            "assets/gallery/Farbige/picture-8.JPG",
-            "assets/gallery/Schwarz-Weiss/picture-39.JPG", 
-            "assets/gallery/Farbige/picture-10.JPG",
-            "assets/gallery/Schwarz-Weiss/picture-37.JPG",
+            "assets/gallery/Farbige/picture-8.jpg",
+            "assets/gallery/Schwarz-Weiss/picture-39.jpg", 
+            "assets/gallery/Farbige/picture-10.jpg",
+            "assets/gallery/Schwarz-Weiss/picture-37.jpg",
         ];
 
         this.currentIndex = 1;
@@ -246,6 +246,7 @@ function createGalleryItem(item, category) {
     const img = document.createElement('img');
     img.src = item.image;
     img.alt = currentLanguage === 'de' ? item.title : item.titleEn;
+    img.loading = item.loading;
 
     const caption = document.createElement('span');
     caption.textContent = currentLanguage === 'de' ? item.title : item.titleEn;
