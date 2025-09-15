@@ -359,9 +359,7 @@ main {
     max-width: 1200px;
     margin: 2rem auto;
     position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
+    overflow: hidden; /* KLJUČNO: Sakriva slajdove van vidnog polja */
     height: 500px;
 }
 
@@ -369,86 +367,71 @@ main {
     display: flex;
     position: relative;
     height: 100%;
+    /* Važno: Osigurava da slajder kreće sa pozicije definisane transformacijom */
+    left: 0; 
 }
 
 .slide {
     min-width: 400px;
     height: 100%;
-    margin: 0 5px; /* Smanjeno sa 10px na 5px */
+    margin: 0 5px;
     position: relative;
-    transform: scale(0.8);
-    opacity: 0.6;
-    transition: all 0.3s ease-in-out;
-    border-radius: 10px;
-    overflow: hidden;
     flex-shrink: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+    
+    /* Stanje neaktivnog slajda */
+    transform: scale(0.8);
+    opacity: 0.6;
+    
+    /* Animiraj samo transform i opacity za bolje performanse */
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* Kada slajder radi svoj "nevidljivi skok", momentalno isključi animacije i na samim slajdovima */
+.slider.no-transition .slide {
+    transition: none;
 }
 
 .slide.active {
+    /* Stanje aktivnog slajda */
     transform: scale(1);
     opacity: 1;
 }
 
 .slide img {
-    /* width: 100%; */
     height: 100%;
     object-fit: contain;
     background-color: #f8f9fa;
 }
 
-/* Desktop - Show 3 slides */
-@media (min-width: 992px) {
-    .slider-container {
-        height: 500px;
-    }
-    
-    .slide {
-        min-width: 400px;
-        margin: 0 5px; /* 10px ukupno između slajdova */
-    }
-}
-
-/* Tablet - Show only center slide */
+/* Tablet */
 @media (max-width: 991px) and (min-width: 576px) {
     .slider-container {
         height: 400px;
-        max-width: 400px; /* Ograniči širinu da se vidi samo centralni */
+        max-width: 400px;
     }
     
     .slide {
         min-width: 400px;
-        margin: 0 5px;
-    }
-    
-    /* Sakrij bočne slajdove */
-    .slide:not(.active) {
-        opacity: 0;
-        pointer-events: none;
     }
 }
 
-/* Mobile - Show only center slide */
+/* Mobile */
 @media (max-width: 575px) {
     .slider-container {
         height: 400px;
-        max-width: 350px; /* Još manja širina za mobilne */
-        margin: 1rem auto;
+        max-width: 350px;
     }
     
     .slide {
         min-width: 350px;
-        margin: 0 5px;
-    }
-    
-    /* Sakrij bočne slajdove */
-    .slide:not(.active) {
-        opacity: 0;
-        pointer-events: none;
     }
 }
+/* Ostatak CSS-a za indikatore je u redu */
 
 /* Click indicators for desktop */
 @media (min-width: 992px) {
@@ -547,7 +530,7 @@ main {
 
 .gallery-separator {
   height: 2px;
-  background: linear-gradient(to right, transparent, #8e44ad, transparent);
+  background: linear-gradient(to right, transparent, #000000, transparent);
   margin: 3rem 0;
 }
 
@@ -618,13 +601,13 @@ main {
   font-size: 1.1rem;
   line-height: 1.8;
   margin: 2rem 0;
-  text-align: justify;
+  text-align: left;
 }
 
 .quote {
   font-style: italic;
   font-size: 1.2rem;
-  color: #8e44ad;
+  color: #000000;
   margin: 2rem 0;
   text-align: center;
 }
@@ -663,7 +646,7 @@ main {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #8e44ad;
+  border-color: #000000;
 }
 
 .form-group textarea {
@@ -672,7 +655,7 @@ main {
 }
 
 .submit-btn {
-  background-color: #8e44ad;
+  background-color: #000000;
   color: white;
   padding: 0.8rem 2rem;
   border: none;
@@ -683,7 +666,7 @@ main {
 }
 
 .submit-btn:hover {
-  background-color: #7d3c98;
+  background-color: #666;
 }
 
 /* Responsive Design */
@@ -864,4 +847,37 @@ main {
 @keyframes fade {
   from { opacity: 1; }
   to { opacity: 0.5; }
+}
+
+/* Stil za strelice u modalu */
+.modal-content .prev,
+.modal-content .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -50px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  transition: 0.3s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+  background-color: rgba(0,0,0,0.5);
+  text-decoration: none;
+}
+
+.modal-content .next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.modal-content .prev {
+  left: 0;
+}
+
+.modal-content .prev:hover,
+.modal-content .next:hover {
+  background-color: rgba(0,0,0,0.8);
 }

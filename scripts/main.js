@@ -1,37 +1,45 @@
-// Infinite Carousel Class
 class ImprovedSlider {
     constructor() {
         this.container = document.querySelector(".slider-container");
-        
         if (!this.container) return;
         
-        this.slider = document.querySelector(".slider");
-        this.slideWidth = 410; // 400px + 10px margin (5px sa svake strane)
+        this.slider = this.container.querySelector(".slider");
+        this.slideWidth = 410; // Desktop slide width + margin
 
         this.images = [
-            "assets/gallery/Farbige/picture-8.jpg",
-            "assets/gallery/Schwarz-Weiss/picture-39.jpg", 
-            "assets/gallery/Farbige/picture-10.jpg",
-            "assets/gallery/Schwarz-Weiss/picture-37.jpg",
+            "../assets/carousel/carusel-1.jpg",
+            "../assets/carousel/carusel-2.jpg", 
+            "../assets/carousel/carusel-3.jpg",
+            "../assets/carousel/carusel-4.jpg",
         ];
 
-        this.currentIndex = 1;
-        this.isAnimating = false;
         this.isMobile = window.innerWidth < 992;
+        this.currentIndex = this.images.length;
+        this.isAnimating = false;
 
+        this.handleLoop = this.handleLoop.bind(this);
         this.init();
     }
 
     init() {
+        this.slider.innerHTML = '';
         this.createSlides();
-        this.setupEventListeners();
+        
+        this.slider.removeEventListener('transitionend', this.handleLoop);
+        
+        this.slider.style.transition = "none"; 
         this.positionSlides();
+        
+        requestAnimationFrame(() => {
+            this.slider.style.transition = "transform 0.3s ease-out";
+        });
+
+        this.setupEventListeners();
         this.startAutoplay();
     }
 
     createSlides() {
-        // Za desktop kreiraj 3 kopije, za mobilne samo 1 kopiju
-        const copies = this.isMobile ? 1 : 3;
+        const copies = 3;
         const totalSlides = this.images.length * copies;
         
         for (let i = 0; i < totalSlides; i++) {
@@ -45,162 +53,104 @@ class ImprovedSlider {
 
     positionSlides() {
         const slides = this.slider.querySelectorAll(".slide");
+        const currentSlideWidth = this.getSlideWidth();
         
-        if (this.isMobile) {
-            // Za mobilne/tablet - jednostavno centriraj trenutni slajd
-            const offset = (this.container.offsetWidth - this.getSlideWidth()) / 2;
-            const baseTransform = -this.currentIndex * this.getSlideWidth() + offset;
-            this.slider.style.transform = `translateX(${baseTransform}px)`;
-            
-            slides.forEach((slide, index) => {
-                slide.classList.toggle("active", index === this.currentIndex % this.images.length);
-            });
-        } else {
-            // Za desktop - originalna logika
-            const offset = (this.container.offsetWidth - this.slideWidth) / 2;
-            const baseTransform = -this.currentIndex * this.slideWidth + offset;
-            this.slider.style.transform = `translateX(${baseTransform}px)`;
+        const offset = (this.container.offsetWidth - currentSlideWidth) / 2;
+        const baseTransform = -this.currentIndex * currentSlideWidth + offset;
+        this.slider.style.transform = `translateX(${baseTransform}px)`;
 
-            slides.forEach((slide, index) => {
-                const normalizedIndex = this.normalizeIndex(index);
-                slide.classList.toggle(
-                    "active",
-                    normalizedIndex === this.currentIndex % this.images.length
-                );
-            });
-        }
+        slides.forEach((slide, index) => {
+            slide.classList.toggle("active", index === this.currentIndex);
+        });
     }
 
-    // Pomerio si sa < 576 ? 310 : 410 posto si u CSS menjao @media (max-width) za .sldider-container: height:400px (bilo je 300) i max-width:350px (bilo je 300), plus i .slide min-width:350px (bilo je 300)
     getSlideWidth() {
-        return this.isMobile ? (window.innerWidth < 576 ? 360 : 410) : this.slideWidth;
-    }
-
-    normalizeIndex(index) {
-        return index % this.images.length;
+        const margin = 10;
+        if (this.isMobile) {
+            return (window.innerWidth < 576 ? 350 : 400) + margin;
+        }
+        return 400 + margin;
     }
 
     moveSlides(direction) {
         if (this.isAnimating) return;
         this.isAnimating = true;
 
-        if (this.isMobile) {
-            // Jednostavna logika za mobilne
-            this.currentIndex = (this.currentIndex + direction + this.images.length) % this.images.length;
-            this.slider.style.transition = "transform 0.3s ease-out";
-            this.positionSlides();
-        } else {
-            // Originalna logika za desktop
-            const slides = this.slider.querySelectorAll(".slide");
-            this.currentIndex += direction;
+        this.currentIndex += direction;
+        this.positionSlides();
+    }
+    
+    // AŽURIRANA METODA: Hendler za petlju (loop)
+    handleLoop() {
+        const numImages = this.images.length;
+        const needsLooping = this.currentIndex >= numImages * 2 || this.currentIndex < numImages;
 
-            this.slider.style.transition = "transform 0.3s ease-out";
-            this.positionSlides();
+        if (needsLooping) {
+            // KORAK 1: Dodaj klasu koja momentalno gasi SVE animacije
+            this.slider.classList.add('no-transition');
+            this.slider.style.transition = 'none';
 
-            if (
-                this.currentIndex >= this.images.length * 2 ||
-                this.currentIndex <= this.images.length - 1
-            ) {
-                setTimeout(() => {
-                    this.slider.style.transition = "none";
-                    this.currentIndex =
-                        this.currentIndex >= this.images.length * 2
-                            ? this.currentIndex - this.images.length
-                            : this.currentIndex + this.images.length;
-                    this.positionSlides();
-                }, 300);
-            }
+            // KORAK 2: Uradi "skok" - prebaci poziciju i .active klasu
+            this.currentIndex = (this.currentIndex % numImages) + numImages;
+            this.positionSlides();
+            
+            // KORAK 3: Vrati animacije. Koristimo rAF da bi se ovo desilo u sledećem frejmu,
+            // nakon što je browser obradio skok bez animacije.
+            requestAnimationFrame(() => {
+                this.slider.classList.remove('no-transition');
+                this.slider.style.transition = 'transform 0.3s ease-out';
+            });
         }
-
-        setTimeout(() => {
-            this.isAnimating = false;
-        }, 300);
     }
 
     setupEventListeners() {
-        // Click/Touch navigacija
+        this.slider.addEventListener('transitionend', (event) => {
+            if (event.target === this.slider && event.propertyName === 'transform') {
+                this.handleLoop();
+                this.isAnimating = false;
+            }
+        });
+        
         this.container.addEventListener("click", (e) => {
-            if (this.isMobile) {
-                // Za mobilne - ceo container je touch area
-                const rect = this.container.getBoundingClientRect();
-                const isLeft = e.clientX < rect.left + rect.width / 2;
-                this.moveSlides(isLeft ? -1 : 1);
-            } else {
-                // Za desktop - originalna logika
-                const rect = this.container.getBoundingClientRect();
-                const isLeft = e.clientX < rect.left + rect.width / 2;
-                this.moveSlides(isLeft ? -1 : 1);
-            }
+            const rect = this.container.getBoundingClientRect();
+            const isLeft = e.clientX < rect.left + rect.width / 2;
+            this.moveSlides(isLeft ? -1 : 1);
         });
 
-        // Touch events za mobilne
-        let startX = 0;
-        let currentX = 0;
-        let isDragging = false;
-
-        this.container.addEventListener("touchstart", (e) => {
-            startX = e.touches[0].clientX;
-            isDragging = true;
-            this.stopAutoplay();
-        });
-
-        this.container.addEventListener("touchmove", (e) => {
-            if (!isDragging) return;
-            currentX = e.touches[0].clientX;
-        });
-
-        this.container.addEventListener("touchend", (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            const diffX = startX - currentX;
-            if (Math.abs(diffX) > 50) { // Minimum swipe distance
-                this.moveSlides(diffX > 0 ? 1 : -1);
-            }
-            
+        let touchStartX = 0;
+        this.container.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; this.stopAutoplay(); }, { passive: true });
+        this.container.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) this.moveSlides(diff > 0 ? 1 : -1);
             this.startAutoplay();
-        });
+        }, { passive: true });
 
-        // Resize event
         window.addEventListener("resize", () => {
-            const newIsMobile = window.innerWidth < 992;
-            if (newIsMobile !== this.isMobile) {
-                // Recreate slider for different layout
-                this.isMobile = newIsMobile;
-                this.slider.innerHTML = '';
-                this.createSlides();
-            }
+            this.isMobile = window.innerWidth < 992;
+            this.slider.style.transition = 'none';
             this.positionSlides();
         });
-
-        // Hover events (samo za desktop)
-        if (!this.isMobile) {
-            this.container.addEventListener("mouseenter", () => {
-                this.stopAutoplay();
-            });
-
-            this.container.addEventListener("mouseleave", () => {
-                this.startAutoplay();
-            });
-        }
+        
+        this.container.addEventListener("mouseenter", () => this.stopAutoplay());
+        this.container.addEventListener("mouseleave", () => this.startAutoplay());
     }
 
     startAutoplay() {
         this.stopAutoplay();
-        this.autoplayInterval = setInterval(() => {
-            this.moveSlides(1);
-        }, 4000);
+        this.autoplayInterval = setInterval(() => this.moveSlides(1), 4000);
     }
 
     stopAutoplay() {
-        if (this.autoplayInterval) {
-            clearInterval(this.autoplayInterval);
-            this.autoplayInterval = null;
-        }
+        clearInterval(this.autoplayInterval);
+        this.autoplayInterval = null;
     }
 }
 
+document.addEventListener('DOMContentLoaded', () => { new ImprovedSlider(); });
+
 let currentLanguage = 'de';
+let currentGallery = []; // Pamti slike iz trenutno otvorene kategorije
+let currentIndex = 0;   // Pamti indeks trenutno prikazane slike
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
@@ -208,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new ImprovedSlider();
     populateGallery();
     bindEventListeners();
+    setupDynamicLogo();
 });
 
 function populateGallery() {
@@ -262,8 +213,44 @@ function createGalleryItem(item, category) {
 }
 
 
+// POTPUNO ZAMENI TVOJU STARU openModal FUNKCIJU
 function openModal(item, category) {
     const modal = document.getElementById('modal');
+
+    // Odredi koja galerija je aktivna na osnovu kategorije
+    if (category === 'colorful') {
+        currentGallery = galleryData.colorful;
+    } else if (category === 'blackwhite') {
+        currentGallery = galleryData.blackwhite;
+    } else {
+        currentGallery = galleryData.older;
+    }
+    
+    // Pronađi indeks kliknute slike u nizu
+    currentIndex = currentGallery.findIndex(galleryItem => galleryItem.image === item.image);
+
+    modal.style.display = 'flex';
+    document.querySelector('.nav-wrapper').style.display = 'none';
+    document.body.style.overflow = 'hidden';
+
+    // Prikaži prvu sliku
+    showImage(currentIndex);
+}
+
+// OVO JE NOVA FUNKCIJA ZA PRIKAZIVANJE SLIKE
+function showImage(index) {
+    // Proveri da li je indeks u validnom opsegu
+    if (index >= currentGallery.length) {
+        index = 0;
+    }
+    if (index < 0) {
+        index = currentGallery.length - 1;
+    }
+    
+    currentIndex = index;
+    const item = currentGallery[currentIndex];
+
+    // Popuni podatke u modalu
     const modalTitle = document.getElementById('modal-title');
     const modalDetails = document.getElementById('modal-details');
     const modalImage = document.getElementById('modal-image');
@@ -271,31 +258,70 @@ function openModal(item, category) {
     modalTitle.textContent = currentLanguage === 'de' ? item.title : item.titleEn;
     
     let details = '';
-    if (item.subtitle) {
-        details += `"${item.subtitle}"<br>`;
-    }
-    if (item.size) {
-        details += `${item.size}<br>`;
-    }
-    if (item.medium) {
-        details += currentLanguage === 'de' ? item.mediumDe : item.medium;
-    }
+    if (item.subtitle) details += `"${item.subtitle}"<br>`;
+    if (item.size) details += `${item.size}<br>`;
+    if (item.medium) details += currentLanguage === 'de' ? item.mediumDe : item.medium;
+    
     modalDetails.innerHTML = details;
-
-    // Set modal image
     modalImage.src = item.image;
     modalImage.alt = currentLanguage === 'de' ? item.title : item.titleEn;
-    // modalImage.style.display = 'block';
+}
 
-    
-    modal.style.display = 'flex';
-
-    document.querySelector('.nav-wrapper').style.display = 'none';
-    
-    document.body.style.overflow = 'hidden';
+// NOVA FUNKCIJA ZA NAVIGACIJU
+function navigateGallery(direction) {
+    showImage(currentIndex + direction);
 }
 
 function bindEventListeners() {
+    // Unutar ili pored tvoje bindEventListeners funkcije
+
+    // Navigacija klikom na strelice
+    document.querySelector('.next').addEventListener('click', () => navigateGallery(1));
+    document.querySelector('.prev').addEventListener('click', () => navigateGallery(-1));
+
+    // Navigacija tastaturom (levo/desno)
+    document.addEventListener('keydown', function(e) {
+        const modal = document.getElementById('modal');
+        if (modal.style.display === 'flex') { // Ako je modal otvoren
+            if (e.key === 'ArrowRight') {
+                navigateGallery(1);
+            } else if (e.key === 'ArrowLeft') {
+                navigateGallery(-1);
+            } else if (e.key === 'Escape') {
+                // Iskoristi postojeću logiku za zatvaranje
+                modal.style.display = 'none';
+                document.querySelector('.nav-wrapper').style.display = '';
+                document.body.style.overflow = '';
+            }
+        }
+    });
+
+    // Osnovna Swipe funkcionalnost za mobilne
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const modalImage = document.getElementById('modal-image');
+
+    modalImage.addEventListener('touchstart', function(event) {
+        touchStartX = event.changedTouches[0].screenX;
+    }, { passive: true });
+
+    modalImage.addEventListener('touchend', function(event) {
+        touchEndX = event.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        // Prevlačenje ulevo (sledeća slika)
+        if (touchEndX < touchStartX - 50) { // 50px je prag
+            navigateGallery(1);
+        }
+        
+        // Prevlačenje udesno (prethodna slika)
+        if (touchEndX > touchStartX + 50) {
+            navigateGallery(-1);
+        }
+    }
+
     // Navigation
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
@@ -521,3 +547,63 @@ window.addEventListener('load', () => {
       document.getElementById('preloader').style.display = 'none';
     }, 3000); // 3 sekunde
 });
+
+function setupDynamicLogo() {
+    // 1. Selektuj oba potencijalna elementa sa pozadinom i logo
+    const containerFluid = document.querySelector('.container-fluid');
+    const body = document.body;
+    const logo = document.getElementById('dynamic-logo');
+
+    // Putanje do slika
+    const lightLogoSrc = 'assets/natasa.png';
+    const darkLogoSrc = 'assets/natasa-white.png';
+
+    if (!containerFluid || !logo) {
+        console.error('Dynamic logo setup failed: Required elements not found.');
+        return;
+    }
+
+    const checkAndUpdateLogo = () => {
+        // 2. Proveri boju na .container-fluid
+        let computedStyle = window.getComputedStyle(containerFluid);
+        let backgroundColor = computedStyle.backgroundColor;
+
+        // 3. AKO JE PROVIDNA, proveri boju na <body>
+        // Boja 'rgba(0, 0, 0, 0)' je standardna vrednost za transparentnu boju.
+        if (backgroundColor === 'rgba(0, 0, 0, 0)') {
+            computedStyle = window.getComputedStyle(body);
+            backgroundColor = computedStyle.backgroundColor;
+        }
+
+        const rgbMatch = backgroundColor.match(/\d+/g);
+        if (!rgbMatch) return;
+
+        const rgb = rgbMatch.map(Number);
+        const brightness = Math.round(((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 114)) / 1000);
+        const isDark = brightness < 128;
+
+        // 4. Promeni logo na osnovu konačne boje
+        if (isDark) {
+            if (!logo.src.endsWith('natasa-white.png')) {
+                logo.src = darkLogoSrc;
+            }
+        } else {
+            if (!logo.src.endsWith('natasa.png')) {
+                logo.src = lightLogoSrc;
+            }
+        }
+    };
+
+    // 5. Postavi "čuvarkuću" (MutationObserver) na OBA elementa
+    const observerCallback = () => checkAndUpdateLogo();
+    const observerOptions = { attributes: true, attributeFilter: ['style', 'class'] };
+    
+    const containerObserver = new MutationObserver(observerCallback);
+    containerObserver.observe(containerFluid, observerOptions);
+
+    const bodyObserver = new MutationObserver(observerCallback);
+    bodyObserver.observe(body, observerOptions);
+
+    // Pokreni proveru odmah
+    checkAndUpdateLogo();
+}
