@@ -7,10 +7,10 @@ class ImprovedSlider {
         this.slideWidth = 410; // Desktop slide width + margin
 
         this.images = [
-            "../assets/carousel/carusel-1.jpg",
-            "../assets/carousel/carusel-2.jpg", 
-            "../assets/carousel/carusel-3.jpg",
-            "../assets/carousel/carusel-4.jpg",
+            "assets/carousel/carusel-1.jpg",
+            "assets/carousel/carusel-2.jpg", 
+            "assets/carousel/carusel-3.jpg",
+            "assets/carousel/carusel-4.jpg",
         ];
 
         this.isMobile = window.innerWidth < 992;
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new ImprovedSlider();
     populateGallery();
     bindEventListeners();
-    setupDynamicLogo();
+    setupDarkModeDetector();
 });
 
 function populateGallery() {
@@ -548,28 +548,18 @@ window.addEventListener('load', () => {
     }, 3000); // 3 sekunde
 });
 
-function setupDynamicLogo() {
-    // 1. Selektuj oba potencijalna elementa sa pozadinom i logo
-    const containerFluid = document.querySelector('.container-fluid');
+function setupDarkModeDetector() {
     const body = document.body;
-    const logo = document.getElementById('dynamic-logo');
+    const containerFluid = document.querySelector('.container-fluid');
 
-    // Putanje do slika
-    const lightLogoSrc = 'assets/natasa.png';
-    const darkLogoSrc = 'assets/natasa-white.png';
+    if (!containerFluid) return;
 
-    if (!containerFluid || !logo) {
-        console.error('Dynamic logo setup failed: Required elements not found.');
-        return;
-    }
-
-    const checkAndUpdateLogo = () => {
-        // 2. Proveri boju na .container-fluid
+    const checkAndUpdateDarkModeClass = () => {
+        // Prvo proveri boju na .container-fluid
         let computedStyle = window.getComputedStyle(containerFluid);
         let backgroundColor = computedStyle.backgroundColor;
 
-        // 3. AKO JE PROVIDNA, proveri boju na <body>
-        // Boja 'rgba(0, 0, 0, 0)' je standardna vrednost za transparentnu boju.
+        // Ako je providna (kao na mobilnom), proveri boju na <body>
         if (backgroundColor === 'rgba(0, 0, 0, 0)') {
             computedStyle = window.getComputedStyle(body);
             backgroundColor = computedStyle.backgroundColor;
@@ -580,30 +570,22 @@ function setupDynamicLogo() {
 
         const rgb = rgbMatch.map(Number);
         const brightness = Math.round(((rgb[0] * 299) + (rgb[1] * 587) + (rgb[2] * 114)) / 1000);
-        const isDark = brightness < 128;
-
-        // 4. Promeni logo na osnovu konačne boje
-        if (isDark) {
-            if (!logo.src.endsWith('natasa-white.png')) {
-                logo.src = darkLogoSrc;
-            }
+        
+        // Ako je pozadina tamna, dodaj klasu. Ako je svetla, ukloni je.
+        if (brightness < 128) {
+            body.classList.add('dark-mode-active');
         } else {
-            if (!logo.src.endsWith('natasa.png')) {
-                logo.src = lightLogoSrc;
-            }
+            body.classList.remove('dark-mode-active');
         }
     };
 
-    // 5. Postavi "čuvarkuću" (MutationObserver) na OBA elementa
-    const observerCallback = () => checkAndUpdateLogo();
+    // Postavi "čuvara" (MutationObserver) na oba elementa
+    const observer = new MutationObserver(checkAndUpdateDarkModeClass);
     const observerOptions = { attributes: true, attributeFilter: ['style', 'class'] };
     
-    const containerObserver = new MutationObserver(observerCallback);
-    containerObserver.observe(containerFluid, observerOptions);
-
-    const bodyObserver = new MutationObserver(observerCallback);
-    bodyObserver.observe(body, observerOptions);
+    observer.observe(containerFluid, observerOptions);
+    observer.observe(body, observerOptions);
 
     // Pokreni proveru odmah
-    checkAndUpdateLogo();
+    checkAndUpdateDarkModeClass();
 }

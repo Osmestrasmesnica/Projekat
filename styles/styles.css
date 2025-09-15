@@ -881,3 +881,70 @@ main {
 .modal-content .next:hover {
   background-color: rgba(0,0,0,0.8);
 }
+
+/* --- DARK MODE STYLES --- */
+
+/* Telo dobija tamnu pozadinu i beli tekst */
+body.dark-mode-active {
+  background-color: #1a1a1a; /* Malo svetlija crna od čiste crne */
+  color: #e0e0e0; /* Svetlo siva za tekst */
+}
+
+/* Okvir na desktopu takođe postaje taman */
+@media (min-width: 1200px) {
+  body.dark-mode-active .container-fluid {
+    background-color: #242424; /* Malo svetlija od pozadine tela */
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* --- Logo --- */
+/* U startu sakrij beli logo */
+.logo-dark {
+  display: none;
+}
+
+/* Kada je dark mode aktivan: */
+body.dark-mode-active .logo-light {
+  display: none; /* Sakrij crni logo */
+}
+body.dark-mode-active .logo-dark {
+  display: block; /* Prikaži beli logo */
+}
+
+/* --- Navigacija --- */
+/* Promeni boju linkova, burger menija i bordera */
+body.dark-mode-active .sub-nav a,
+body.dark-mode-active .instagram-link,
+body.dark-mode-active .burger-menu span {
+  color: #ffffff;
+  background-color: transparent; /* Za burger span */
+}
+
+body.dark-mode-active .sub-nav {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode-active .sub-nav a.active::after {
+    background-color: #ffffff;
+}
+
+/* --- Dugme za jezik --- */
+body.dark-mode-active .lang-btn {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+body.dark-mode-active .lang-btn:hover,
+body.dark-mode-active .lang-btn.active {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+/* --- Footer --- */
+body.dark-mode-active .footer {
+  color: #a0a0a0; /* Malo tamniji beli tekst za footer */
+}
+
+body.dark-mode-active .footer-separator {
+    background: rgba(255, 255, 255, 0.2);
+}
