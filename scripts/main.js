@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => { new ImprovedSlider(); });
 let currentLanguage = 'de';
 let currentGallery = []; // Pamti slike iz trenutno otvorene kategorije
 let currentIndex = 0;   // Pamti indeks trenutno prikazane slike
+let currentCategory = ''; // << NOVA PROMENLJIVA: Pamti trenutnu kategoriju
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
@@ -213,9 +214,12 @@ function createGalleryItem(item, category) {
 }
 
 
-// POTPUNO ZAMENI TVOJU STARU openModal FUNKCIJU
+// AŽURIRANA FUNKCIJA openModal
 function openModal(item, category) {
     const modal = document.getElementById('modal');
+
+    // Postavi trenutnu kategoriju kako bi ostale funkcije znale o kojoj se radi
+    currentCategory = category;
 
     // Odredi koja galerija je aktivna na osnovu kategorije
     if (category === 'colorful') {
@@ -237,7 +241,7 @@ function openModal(item, category) {
     showImage(currentIndex);
 }
 
-// OVO JE NOVA FUNKCIJA ZA PRIKAZIVANJE SLIKE
+// AŽURIRANA FUNKCIJA showImage (sa logikom za sakrivanje)
 function showImage(index) {
     // Proveri da li je indeks u validnom opsegu
     if (index >= currentGallery.length) {
@@ -250,11 +254,21 @@ function showImage(index) {
     currentIndex = index;
     const item = currentGallery[currentIndex];
 
-    // Popuni podatke u modalu
+    // Pronađi elemente u modalu
     const modalTitle = document.getElementById('modal-title');
     const modalDetails = document.getElementById('modal-details');
     const modalImage = document.getElementById('modal-image');
+    const modalInfo = document.querySelector('.modal-info'); // Selektuj kontejner sa informacijama
 
+    // *** KLJUČNA IZMENA: Sakrij ili prikaži informacije o slici ***
+    // Ako je kategorija 'older', sakrij .modal-info, u suprotnom ga prikaži.
+    if (currentCategory === 'older') {
+        modalInfo.style.display = 'none';
+    } else {
+        modalInfo.style.display = 'block'; // ili 'flex', zavisno od vašeg CSS-a
+    }
+
+    // Popuni podatke u modalu
     modalTitle.textContent = currentLanguage === 'de' ? item.title : item.titleEn;
     
     let details = '';
